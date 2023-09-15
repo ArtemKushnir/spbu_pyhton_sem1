@@ -15,7 +15,7 @@ def wc(argument, name_file):
         with open(name_file) as fm:
             return sum([len(line) for line in fm])
     else:
-        print("error")
+        return None
 
 
 def head(argument, name_file, value):
@@ -26,7 +26,7 @@ def head(argument, name_file, value):
         with open(name_file) as fc:
             return fc.read(value)
     else:
-        print("error")
+        return None
 
 
 def tail(argument, file_text, value):
@@ -40,7 +40,7 @@ def tail(argument, file_text, value):
             fc.seek(max(fc_size - value, 0), 0)
             return "".join([line for line in fc])
     else:
-        print("error")
+        return None
 
 
 if __name__ == "__main__":
@@ -57,10 +57,19 @@ if __name__ == "__main__":
             number = arguments[i + 1]
             break
     if command == "wc":
-        print(f"{command, option, file_name}:", wc(option, file_name))
+        if wc(option, file_name) is None:
+            print("error")
+        else:
+            print(f"{command, option, file_name}:", wc(option, file_name))
     elif command == "head":
-        print(f"{command, option, number, file_name}:", head(option, file_name, number))
+        if head(option, file_name, number) is None:
+            print("error")
+        else:
+            print(f"{command, option, number, file_name}:", head(option, file_name, number))
     elif command == "tail":
-        print(f"{command, option, number, file_name}:", head(option, file_name, number))
+        if tail(option, file_name, number) is None:
+            print("error")
+        else:
+            print(f"{command, option, number, file_name}:", tail(option, file_name, number))
     else:
         print("error")

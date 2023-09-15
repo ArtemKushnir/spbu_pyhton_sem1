@@ -1,6 +1,6 @@
 def score(x):
-    sqrt_x = x * x
-    return (sqrt_x + 1) * (sqrt_x + x) + 1
+    squared_x = x * x
+    return (squared_x + 1) * (squared_x + x) + 1
 
 
 if __name__ == "__main__":
