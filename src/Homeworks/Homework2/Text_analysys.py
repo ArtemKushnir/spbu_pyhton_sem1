@@ -1,17 +1,13 @@
 import csv
 
 
-def read_file(file_read, file_record):
+def read_file(file_read):
     all_words = {}
     with open(file_read) as file_txt:
         for line in file_txt:
             for word in line.lower().split():
-                if word in all_words:
-                    all_words[word] += 1
-                else:
-                    all_words[word] = 1
-
-    record_file(file_record, all_words)
+                all_words[word] = all_words.get(word, 0) + 1
+    return all_words
 
 
 def record_file(file_record, all_words):
@@ -20,10 +16,7 @@ def record_file(file_record, all_words):
         writer.writerow(
             ("Слово", "Количество")
         )
-        for i in all_words:
-            writer.writerow(
-                [i, all_words[i]]
-            )
+        writer.writerows(zip(list(all_words.keys()), list(all_words.values())))
 
 
 if __name__ == "__main__":
@@ -31,4 +24,4 @@ if __name__ == "__main__":
     file_name_read = input()
     print("Название файла для записи:")
     file_name_record = input()
-    read_file(file_name_read, file_name_record)
+    record_file(file_name_record, read_file(file_name_read))
