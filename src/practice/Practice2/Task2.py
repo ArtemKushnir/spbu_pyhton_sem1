@@ -30,7 +30,9 @@ if __name__ == "__main__":
     print("Это игра 'Быки и коровы'")
     print("Введите количество цифр в числе для игры:")
     k = int(input())
-    number = ''.join(str(element) for element in ([1] + (random.sample(range(0, 9), k - 1))))
+    number = "".join(
+        str(element) for element in ([1] + (random.sample(range(0, 9), k - 1)))
+    )
     print("Введите число:")
     n = input()
     game(n, number, k)
