@@ -13,9 +13,7 @@ def read_file(file_read):
 def record_file(file_record, all_words):
     with open(file_record, "w") as file_csv:
         writer = csv.writer(file_csv)
-        writer.writerow(
-            ("Слово", "Количество")
-        )
+        writer.writerow(("Слово", "Количество"))
         writer.writerows(zip(list(all_words.keys()), list(all_words.values())))
 
 
