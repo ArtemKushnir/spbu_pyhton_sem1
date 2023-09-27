@@ -20,19 +20,32 @@ def read(file_read):
 
 def record(dna, file_record):
     with open(file_record, "w") as f_record:
-        f_record.write(''.join(dna))
+        f_record.write("".join(dna))
 
 
 def delete(dna, argument1, argument2):
-    return dna[:dna.find(argument1)] + dna[dna.find(argument2, dna.find(argument1) + len(argument1)) + len(argument2):]
+    return (
+        dna[: dna.find(argument1)]
+        + dna[
+            dna.find(argument2, dna.find(argument1) + len(argument1)) + len(argument2) :
+        ]
+    )
 
 
 def insert(dna, argument1, argument2):
-    return dna[:dna.find(argument1) + len(argument1)] + argument2 + dna[dna.find(argument1) + len(argument1):]
+    return (
+        dna[: dna.find(argument1) + len(argument1)]
+        + argument2
+        + dna[dna.find(argument1) + len(argument1) :]
+    )
 
 
 def replace(dna, argument1, argument2):
-    return dna[:dna.find(argument1)] + argument2 + dna[dna.find(argument1) + len(argument1):]
+    return (
+        dna[: dna.find(argument1)]
+        + argument2
+        + dna[dna.find(argument1) + len(argument1) :]
+    )
 
 
 if __name__ == "__main__":
