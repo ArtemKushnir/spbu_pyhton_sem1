@@ -1,36 +1,57 @@
 from math import *
 
 
-def get_vector_scalar_product(first_vector, second_vector):  # функция скалярного произведения векторов
+def get_vector_scalar_product(
+    first_vector, second_vector
+):  # функция скалярного произведения векторов
     return sum([i[0] * i[1] for i in list(zip(first_vector, second_vector))])
 
 
 def get_vector_length(coordinates):  # функция длины вектора
-    return (sum([x ** 2 for x in coordinates])) ** 0.5
+    return (sum([x**2 for x in coordinates])) ** 0.5
 
 
 def get_vector_angle(first_vector, second_vector):  # фунуция угла между векторами
-    return degrees(acos((get_vector_scalar_product(first_vector, second_vector)) / (
-            get_vector_length(first_vector) * get_vector_length(second_vector))))
+    return degrees(
+        acos(
+            (get_vector_scalar_product(first_vector, second_vector))
+            / (get_vector_length(first_vector) * get_vector_length(second_vector))
+        )
+    )
 
 
-def get_matrix_transposition(matrix, lines, columns):  # функция транспонирования матрицы
+def get_matrix_transposition(
+    matrix, lines, columns
+):  # функция транспонирования матрицы
     return [[matrix[j][i] for j in range(lines)] for i in range(columns)]
 
 
-def get_matrix_addition(first_matrix, second_matrix, lines, columns):  # функция сложения матриц
-    return [[first_matrix[j][i] + second_matrix[j][i] for i in range(columns)] for j in range(lines)]
+def get_matrix_addition(
+    first_matrix, second_matrix, lines, columns
+):  # функция сложения матриц
+    return [
+        [first_matrix[j][i] + second_matrix[j][i] for i in range(columns)]
+        for j in range(lines)
+    ]
 
 
-def get_matrix_multiplication(first_matrix, second_matrix, lines1, columns1, lines2, columns2):  # функция произведения матриц
-    return [[get_vector_scalar_product(i, j) for j in get_matrix_transposition(second_matrix, lines2, columns2)]
-            for i in first_matrix]
-
+def get_matrix_multiplication(
+    first_matrix, second_matrix, lines1, columns1, lines2, columns2
+):  # функция произведения матриц
+    return [
+        [
+            get_vector_scalar_product(i, j)
+            for j in get_matrix_transposition(second_matrix, lines2, columns2)
+        ]
+        for i in first_matrix
+    ]
 
 
 def select_action_vector():
-    print("Доступны 3 вида операций над векторами:\n1.Скалярное произведение\n2.Вычисление длины\n"
-          "3.Нахождение угла.")
+    print(
+        "Доступны 3 вида операций над векторами:\n1.Скалярное произведение\n2.Вычисление длины\n"
+        "3.Нахождение угла."
+    )
     operation_vector = input()
 
     if operation_vector == "1":
@@ -47,7 +68,9 @@ def select_action_vector():
 
 
 def select_scalar_product_vector():
-    print("Для корректной работы важно, чтобы оба вектора содержали одинаковое количество кординат!")
+    print(
+        "Для корректной работы важно, чтобы оба вектора содержали одинаковое количество кординат!"
+    )
     print("Введите через пробел кординаты первого вектора:")
     first_vector = [int(i) for i in input().split()]
     print("Введите через пробел кординаты второго вектора:")
@@ -55,7 +78,10 @@ def select_scalar_product_vector():
     if len(first_vector) != len(second_vector):
         print("Ошибка! Вы ввели векторы с разным количеством кординат.")
     else:
-        print("Скалярное произведение равно", get_vector_scalar_product(first_vector, second_vector))
+        print(
+            "Скалярное произведение равно",
+            get_vector_scalar_product(first_vector, second_vector),
+        )
 
 
 def select_length_vector():
@@ -65,7 +91,9 @@ def select_length_vector():
 
 
 def select_angle_vector():
-    print("Для корректной работы важно, чтобы оба вектора содержали одинаковое количество кординат!")
+    print(
+        "Для корректной работы важно, чтобы оба вектора содержали одинаковое количество кординат!"
+    )
     print("Введите через пробел кординаты первого вектора:")
     first_vector = [int(i) for i in input().split()]
     print("Введите через пробел кординаты второго вектора:")
@@ -73,13 +101,19 @@ def select_angle_vector():
     if len(first_vector) != len(second_vector):
         print("Ошибка! Вы ввели векторы с разным количеством кординат.")
     else:
-        print(f"Угол между векторами равен {round(get_vector_angle(first_vector, second_vector), 2)}°")
+        print(
+            f"Угол между векторами равен {round(get_vector_angle(first_vector, second_vector), 2)}°"
+        )
 
 
 def select_action_matrix():
-    print("Доступны 3 вида операций над матрицами:\n1.Транспонирование\n2.Сложение\n3.Произведение")
+    print(
+        "Доступны 3 вида операций над матрицами:\n1.Транспонирование\n2.Сложение\n3.Произведение"
+    )
     operation_matrix = input()
-    print("Для корректной работы важно, чтобы все строчки матрицы содержали одиннаковое количество значений!")
+    print(
+        "Для корректной работы важно, чтобы все строчки матрицы содержали одиннаковое количество значений!"
+    )
 
     if operation_matrix == "1":
         select_transposition_matrix()
@@ -113,7 +147,9 @@ def select_transposition_matrix():
 
 
 def select_addition_matrix():
-    print("Чтобы произвести сложение матриц, нужно, чтобы они были одинаковой размерности.")
+    print(
+        "Чтобы произвести сложение матриц, нужно, чтобы они были одинаковой размерности."
+    )
     print("Введите количество строк в ваших матрицах:")
     lines_matrix = int(input())
     print("Введите количество столбцов в ваших матрицах")
@@ -135,13 +171,17 @@ def select_addition_matrix():
                 break
         else:
             print("Результат сложения матриц:")
-            for line in get_matrix_addition(matrix_first, matrix_second, lines_matrix, columns_matrix):
+            for line in get_matrix_addition(
+                matrix_first, matrix_second, lines_matrix, columns_matrix
+            ):
                 print(*line)
 
 
 def select_product_matrix():
-    print("Чтобы произвести произведение матриц, нужно, чтобы количество столбцов первой матрицы равнялось "
-          "количество строк второй матрицы, либо наоборот.")
+    print(
+        "Чтобы произвести произведение матриц, нужно, чтобы количество столбцов первой матрицы равнялось "
+        "количество строк второй матрицы, либо наоборот."
+    )
     print("Введите количество строк первой матрицы:")
     first_lines_matrix = int(input())
     print("Введите количество столбцов первой матрицы")
@@ -160,7 +200,10 @@ def select_product_matrix():
         print("Введите количество столбцов второй матрицы:")
         second_columns_matrix = int(input())
         flag = True
-        if not (first_columns_matrix == second_lines_matrix or first_lines_matrix == second_columns_matrix):
+        if not (
+            first_columns_matrix == second_lines_matrix
+            or first_lines_matrix == second_columns_matrix
+        ):
             print("Такие матрицы невозможно перемножить!")
             flag = False
         if flag:
@@ -168,18 +211,32 @@ def select_product_matrix():
             for j in range(second_lines_matrix):
                 matrix_second.append([int(i) for i in input().split()])
                 if len(matrix_second[j]) != second_columns_matrix:
-                    print("Ошибка! В строчках второй матрицы разное количество элементов!")
+                    print(
+                        "Ошибка! В строчках второй матрицы разное количество элементов!"
+                    )
                     break
             else:
                 if first_columns_matrix == second_lines_matrix:
                     print("Результат умножения матриц:")
-                    for line in get_matrix_multiplication(matrix_first, matrix_second, first_lines_matrix,
-                                                          first_columns_matrix, second_lines_matrix, second_columns_matrix):
+                    for line in get_matrix_multiplication(
+                        matrix_first,
+                        matrix_second,
+                        first_lines_matrix,
+                        first_columns_matrix,
+                        second_lines_matrix,
+                        second_columns_matrix,
+                    ):
                         print(*line)
                 elif first_lines_matrix == second_columns_matrix:
                     print("Результат умножения матриц:")
-                    for line in get_matrix_multiplication(matrix_second, matrix_first, second_lines_matrix,
-                                                          second_columns_matrix, first_lines_matrix, first_columns_matrix):
+                    for line in get_matrix_multiplication(
+                        matrix_second,
+                        matrix_first,
+                        second_lines_matrix,
+                        second_columns_matrix,
+                        first_lines_matrix,
+                        first_columns_matrix,
+                    ):
                         print(*line)
 
 
