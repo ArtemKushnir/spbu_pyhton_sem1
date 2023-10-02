@@ -7,9 +7,11 @@ def division(a, b):
 
 
 if __name__ == "__main__":
-    print('Неполное частное от деления a на b')
-    print('Введите число a')
+    print("Неполное частное от деления a на b")
+    print("Введите число a")
     a = int(input())
-    print('Введите число b')
+    print("Введите число b")
     b = int(input())
-    print(f'Неполное частное от деления a на b: {division(a, b)}, остаток: {a - b*division(a, b)}')
+    print(
+        f"Неполное частное от деления a на b: {division(a, b)}, остаток: {a - b*division(a, b)}"
+    )
