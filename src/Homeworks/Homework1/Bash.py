@@ -10,7 +10,7 @@ def wc(argument, name_file):
             return sum([line.count("\n") for line in fl])
     elif argument == "-w":
         with open(name_file) as fw:
-            return sum([len(line.split())for line in fw])
+            return sum([len(line.split()) for line in fw])
     elif argument == "-m":
         with open(name_file) as fm:
             return sum([len(line) for line in fm])
@@ -65,11 +65,17 @@ if __name__ == "__main__":
         if head(option, file_name, number) is None:
             print("error")
         else:
-            print(f"{command, option, number, file_name}:", head(option, file_name, number))
+            print(
+                f"{command, option, number, file_name}:",
+                head(option, file_name, number),
+            )
     elif command == "tail":
         if tail(option, file_name, number) is None:
             print("error")
         else:
-            print(f"{command, option, number, file_name}:", tail(option, file_name, number))
+            print(
+                f"{command, option, number, file_name}:",
+                tail(option, file_name, number),
+            )
     else:
         print("error")
