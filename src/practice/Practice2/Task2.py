@@ -1,38 +1,51 @@
 import random
 
 
-def bulls_and_cows(n1, n2, length):
+def counting_bulls_and_cows(user_number, my_number):
     cows = 0
     bulls = 0
+    length = 4
     for i in range(length):
-        if n1[i] == n2[i]:
+        if user_number[i] == my_number[i]:
             bulls += 1
-        elif n1[i] in n2:
+        elif user_number[i] in my_number:
             cows += 1
-    if bulls == length:
-        return None
     return [bulls, cows]
 
 
-def game(n, my_number, k):
+def determine_result(user_number, my_number):
     while True:
-        if bulls_and_cows(n, my_number, k) is None:
+        bulls, cows = counting_bulls_and_cows(user_number, my_number)
+        print(bulls, cows)
+        if bulls == 4:
             print("Вы выиграли")
             break
         else:
-            print(f"Быки: {bulls_and_cows(n, my_number, k)[0]}")
-            print(f"Коровы: {bulls_and_cows(n, my_number, k)[1]}")
+            print(f"Быки: {bulls}")
+            print(f"Коровы: {cows}")
             print("Введите новое число:")
-            n = input()
+            user_number = input()
+            if not user_number.isdigit():
+                print("Ошибка, введено не число")
+                break
+            elif user_number[0] == "0":
+                print("Ошибка, первая цифра не может быть нулем")
+                break
 
 
 if __name__ == "__main__":
     print("Это игра 'Быки и коровы'")
-    print("Введите количество цифр в числе для игры:")
-    k = int(input())
-    number = "".join(
-        str(element) for element in ([1] + (random.sample(range(0, 9), k - 1)))
-    )
-    print("Введите число:")
+    all_digits = [str(i) for i in range(10)]
+    random.shuffle(all_digits)
+    if all_digits[0] == "0":
+        random_number = "".join(all_digits[1:5])
+    else:
+        random_number = "".join(all_digits[:4])
+    print("Введите четырехзначное число:")
     n = input()
-    game(n, number, k)
+    if not n.isdigit():
+        print("Ошибка, введено не число")
+    elif n[0] == "0":
+        print("Ошибка, первая цифра не может быть нулем")
+    else:
+        determine_result(n, random_number)
