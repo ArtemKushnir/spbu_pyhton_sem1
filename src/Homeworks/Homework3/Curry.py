@@ -28,7 +28,7 @@ def uncurry_explicit(function, arity):
             return "incorrect arity"
         else:
             for i in args:
-                result += [function(i)]
+                result += [i]
             return function(*result)
 
     return accept_arguments
