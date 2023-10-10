@@ -11,7 +11,9 @@ def curry_explicit(function, arity):
             while True:
                 f_args += [args]
                 if len(f_args) == arity:
-                    return function(*f_args)
+                    result = f_args
+                    f_args = []
+                    return function(*result)
                 return accept_arguments
 
     return accept_arguments
@@ -28,7 +30,8 @@ def uncurry_explicit(function, arity):
             return "incorrect arity"
         else:
             for i in args:
-                result += [i]
-            return function(*result)
+                if i == args[-1]:
+                    return function(i)
+                function(i)
 
     return accept_arguments
