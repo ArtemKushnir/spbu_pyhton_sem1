@@ -5,15 +5,15 @@ import os
 def read_and_process(first_number, second_number, file_input):
     with open(file_input) as f_input:
         all_numbers = [int(i) for i in f_input.readline().split()]
-        first, second, third = "", "", ""
+        first, second, third = [], [], []
         for i in all_numbers:
             if i < first_number:
-                first += str(i) + " "
+                first += str(i)
             elif first_number <= i <= second_number:
-                second += str(i) + " "
+                second += str(i)
             else:
-                third += str(i) + " "
-    return first + "\n" + second + "\n" + third
+                third += str(i)
+    return " ".join(first) + "\n" + " ".join(second) + "\n" + " ".join(third)
 
 
 def writing_file(file_output, result):
