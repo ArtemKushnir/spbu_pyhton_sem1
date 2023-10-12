@@ -12,7 +12,9 @@ def find_fractions(max_denominator):
 
 def output_fractions(numerators_and_denominators):
     print("Все подходящие дроби:")
-    fractions = map(lambda fraction: f"{fraction[0]}/{fraction[1]}", numerators_and_denominators)
+    fractions = map(
+        lambda fraction: f"{fraction[0]}/{fraction[1]}", numerators_and_denominators
+    )
     return ", ".join(fractions)
 
 
@@ -24,4 +26,3 @@ if __name__ == "__main__":
     else:
         all_fractions = find_fractions(n)
         print(output_fractions(all_fractions))
-        
