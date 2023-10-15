@@ -4,10 +4,20 @@ def find_fractions(max_denominator):
         for denominator in range(numerator + 1, max_denominator + 1):
             if numerator == 1:
                 res.append((numerator, denominator))
-            elif denominator % numerator != 0:
+            elif find_divisors(
+                max(numerator, denominator), min(numerator, denominator)
+            ):
                 res.append((numerator, denominator))
     res.sort(key=lambda x: x[0] / x[1])
     return res
+
+
+def find_divisors(number1, number2):
+    while number1 % number2 != 0:
+        number1, number2 = number2, number1 % number2
+    if number2 == 1:
+        return True
+    return False
 
 
 def output_fractions(numerators_and_denominators):
@@ -20,9 +30,13 @@ def output_fractions(numerators_and_denominators):
 
 if __name__ == "__main__":
     print("Введите знаменатель:")
-    n = int(input())
-    if n <= 1:
-        print("Ошибка, знаменатель должен быть больше 1")
+    n = input()
+    if n.isdigit():
+        n = int(n)
+        if n <= 1:
+            print("Ошибка, знаменатель должен быть больше 1")
+        else:
+            all_fractions = find_fractions(n)
+            print(output_fractions(all_fractions))
     else:
-        all_fractions = find_fractions(n)
-        print(output_fractions(all_fractions))
+        print("Ошибка! Введено не число")
