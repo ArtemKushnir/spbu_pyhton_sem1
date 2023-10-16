@@ -1,23 +1,16 @@
+import math
+
+
 def find_fractions(max_denominator):
     res = []
     for numerator in range(1, max_denominator):
         for denominator in range(numerator + 1, max_denominator + 1):
             if numerator == 1:
                 res.append((numerator, denominator))
-            elif find_divisors(
-                max(numerator, denominator), min(numerator, denominator)
-            ):
+            elif math.gcd(numerator, denominator) == 1:
                 res.append((numerator, denominator))
     res.sort(key=lambda x: x[0] / x[1])
     return res
-
-
-def find_divisors(number1, number2):
-    while number1 % number2 != 0:
-        number1, number2 = number2, number1 % number2
-    if number2 == 1:
-        return True
-    return False
 
 
 def output_fractions(numerators_and_denominators):
