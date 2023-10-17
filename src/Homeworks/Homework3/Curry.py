@@ -1,37 +1,33 @@
 def curry_explicit(function, arity):
-    f_args = []
+    if arity < 0:
+        raise ValueError("arity cannot be negative")
+    elif arity == 0:
+        return function
 
-    def accept_arguments(args):
-        nonlocal f_args
-        if arity < 0:
-            return "arity cannot be negative"
-        elif arity == 0:
-            return function()
-        else:
-            while True:
-                f_args += [args]
-                if len(f_args) == arity:
-                    result = f_args
-                    f_args = []
-                    return function(*result)
-                return accept_arguments
+    def curry(arguments):
+        if len(arguments) == arity:
+            return function(*arguments)
 
-    return accept_arguments
+        def accept_new_argument(new_argument):
+            return curry([*arguments, new_argument])
+
+        return accept_new_argument
+
+    return curry(arguments=[])
 
 
 def uncurry_explicit(function, arity):
-    result = []
+    if arity < 0:
+        raise ValueError("arity cannot be negative")
 
     def accept_arguments(*args):
-        nonlocal result
-        if arity < 0:
-            return "arity cannot be negative"
-        elif arity != len(args):
-            return "incorrect arity"
-        else:
-            for i in args:
-                if i == args[-1]:
-                    return function(i)
-                function(i)
+        if arity != len(args):
+            raise ValueError("incorrect arity")
+        if arity == 0:
+            return function()
+        result = function(args[0])
+        for i in range(1, arity):
+            result = result(args[i])
+        return result
 
     return accept_arguments
