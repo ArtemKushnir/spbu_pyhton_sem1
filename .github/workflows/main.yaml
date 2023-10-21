@@ -18,4 +18,4 @@ jobs:
       - name: "black"
         run: black . --check --diff --color
       - name: "pytest"
-      	run: python -m pytest tests
+        run: python -m pytest tests
