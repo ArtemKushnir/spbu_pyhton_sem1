@@ -15,9 +15,9 @@ def determine_type_equation(a, b, c):
 def solve_quadratic_equation(a, b, c):
     d = b**2 - 4 * a * c
     if d == 0:
-        return [-b / (2 * a)]
+        return (-b / (2 * a),)
     elif d > 0:
-        return [(-b + d**0.5) / (2 * a), (-b - d**0.5) / (2 * a)]
+        return (-b + d**0.5) / (2 * a), (-b - d**0.5) / (2 * a)
     raise ArithmeticError("To find real roots discriminant must be non-negative")
 
 
@@ -42,13 +42,13 @@ def validation_user_input(coefficients):
 
 def is_float_number(coefficients):
     try:
-        return [float(i) for i in coefficients]
+        return float(coefficients[0]), float(coefficients[1]), float(coefficients[2])
     except ValueError:
         raise ValueError("is not a real number")
 
 
 def main_func():
-    arguments = input("enter three real numbers a, b, c: ").split()
+    arguments = input("enter three real numbers a, b, c: ").split(" ")
     try:
         arguments = validation_user_input(arguments)
     except ValueError as e:
