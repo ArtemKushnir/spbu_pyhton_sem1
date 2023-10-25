@@ -174,10 +174,13 @@ def main_func(number, format_number):
 
 if __name__ == "__main__":
     print("enter a real number in decimal form")
-    real_number = float(input())
-    print("select the output format")
-    print("1.FP64\n2.FP32\n3.FP16")
-    form = int(input("select the output format: "))
-    fp_form, normal_form, order = main_func(real_number, form)
-    print(f"number in normalized form: {normal_form} * 2^{order}")
-    print("number in the selected format:", fp_form)
+    try:
+        real_number = float(input())
+        print("select the output format")
+        print("1.FP64\n2.FP32\n3.FP16")
+        form = int(input("select the output format: "))
+        fp_form, normal_form, order = main_func(real_number, form)
+        print(f"number in normalized form: {normal_form} * 2^{order}")
+        print("number in the selected format:", fp_form)
+    except ValueError:
+        print("not a number")
