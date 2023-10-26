@@ -11,10 +11,12 @@ def test_raise_exception_quadratic_equation(a, b, c):
 
 @pytest.mark.parametrize(
     "a,b,c,expected",
-    [(2, -1, -15, (3, -2.5)),
-     (-1, 0, 1, (-1, 1)),
-     (2.5, 3.5, -7.56, (1.1745666165810165, -2.5745666165810164)),
-     (8.5, 6, 0, (0.0, -0.7058823529411765))],
+    [
+        (2, -1, -15, (3, -2.5)),
+        (-1, 0, 1, (-1, 1)),
+        (2.5, 3.5, -7.56, (1.1745666165810165, -2.5745666165810164)),
+        (8.5, 6, 0, (0.0, -0.7058823529411765)),
+    ],
 )
 def test_quadratic_equation_two_roots(a, b, c, expected):
     actual = solve_quadratic_equation(a, b, c)
@@ -22,7 +24,13 @@ def test_quadratic_equation_two_roots(a, b, c, expected):
 
 
 @pytest.mark.parametrize(
-    "a,b,c,expected", [(8.86, 0, 0, (0.0,)), (-20, 20, -5, (0.5,)), (1, 4, 4, (-2,)), (5, 7, 2.45, (-0.7,))]
+    "a,b,c,expected",
+    [
+        (8.86, 0, 0, (0.0,)),
+        (-20, 20, -5, (0.5,)),
+        (1, 4, 4, (-2,)),
+        (5, 7, 2.45, (-0.7,)),
+    ],
 )
 def test_quadratic_equation_one_roots(a, b, c, expected):
     actual = solve_quadratic_equation(a, b, c)
@@ -53,7 +61,7 @@ def test_raise_exception_constant_equation(c):
         (",", False),
         ("...", False),
         ("2..5", False),
-        ("2,5", False)
+        ("2,5", False),
     ],
 )
 def test_is_float_number(coefficient, expected):
@@ -85,7 +93,7 @@ def test_raise_exception_parse_user_input(coefficients):
         (2, -1, -15, (-2.5, 3)),
         (-1, 0, 1, (-1.0, 1.0)),
         (1, 8, 16, (-4.0,)),
-        (0, -100, 200, (2,))
+        (0, -100, 200, (2,)),
     ],
 )
 def test_solve_equations(a, b, c, expected):

@@ -7,13 +7,13 @@ def solve_equations(a, b, c):
 
 
 def solve_quadratic_equation(a, b, c):
-    d = b ** 2 - 4 * a * c
+    d = b**2 - 4 * a * c
     if d == 0:
         if b == 0:
             return (b / (2 * a),)
         return (-b / (2 * a),)
     elif d > 0:
-        return (-b + d ** 0.5) / (2 * a), (-b - d ** 0.5) / (2 * a)
+        return (-b + d**0.5) / (2 * a), (-b - d**0.5) / (2 * a)
     raise ArithmeticError("To find real roots discriminant must be non-negative")
 
 
