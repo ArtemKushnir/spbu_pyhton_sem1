@@ -1,63 +1,61 @@
-def determine_type_equation(a, b, c):
+def solve_equations(a, b, c):
     if a != 0:
-        roots = solve_quadratic_equation(a, b, c)
-        if len(roots) == 2:
-            return f"roots of quadratic equation: {min(roots)}, {max(roots)}"
-        else:
-            return f"root of quadratic equation: {roots[0]}"
+        return tuple(sorted(solve_quadratic_equation(a, b, c)))
     elif b != 0:
-        return f"root of a linear equation: {solve_linear_equation(b, c)}"
-    else:
-        if solve_constant_equation(c):
-            return "infinitely many solutions"
+        return solve_linear_equation(b, c)
+    return solve_constant_equation(c)
 
 
 def solve_quadratic_equation(a, b, c):
-    d = b**2 - 4 * a * c
+    d = b ** 2 - 4 * a * c
     if d == 0:
+        if b == 0:
+            return (b / (2 * a),)
         return (-b / (2 * a),)
     elif d > 0:
-        return (-b + d**0.5) / (2 * a), (-b - d**0.5) / (2 * a)
+        return (-b + d ** 0.5) / (2 * a), (-b - d ** 0.5) / (2 * a)
     raise ArithmeticError("To find real roots discriminant must be non-negative")
 
 
 def solve_linear_equation(b, c):
-    return -c / b
+    return (-c / b,)
 
 
 def solve_constant_equation(c):
     if c != 0:
         raise ArithmeticError("no solutions")
-    return float("inf")
+    raise ArithmeticError("infinitely many solutions")
 
 
-def validation_user_input(coefficients):
+def parse_user_input(coefficients):
+    coefficients = coefficients.split()
     if len(coefficients) != 3:
         raise ValueError("less than three arguments")
-    try:
-        return is_float_number(coefficients)
-    except ValueError as e:
-        raise e
+    elif any(not is_float_number(i) for i in coefficients):
+        raise ValueError("a non-real number is entered")
+    return tuple((float(i) for i in coefficients))
 
 
-def is_float_number(coefficients):
+def is_float_number(coefficient):
     try:
-        return float(coefficients[0]), float(coefficients[1]), float(coefficients[2])
+        float(coefficient)
+        return True
     except ValueError:
-        raise ValueError("is not a real number")
+        return False
 
 
 def main_func():
-    arguments = input("enter three real numbers a, b, c: ").split(" ")
+    arguments = input("enter three real numbers a, b, c: ")
     try:
-        arguments = validation_user_input(arguments)
+        arguments = parse_user_input(arguments)
+        print(f"solution:", *solve_equations(*arguments))
     except ValueError as e:
-        return str(e)
-    try:
-        return determine_type_equation(*arguments)
+        print(str(e))
     except ArithmeticError as e:
-        return str(e)
+        print(str(e))
+    except:
+        print("something went wrong, try again later")
 
 
 if __name__ == "__main__":
-    print(main_func())
+    main_func()
