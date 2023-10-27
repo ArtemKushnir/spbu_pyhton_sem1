@@ -6,8 +6,8 @@ from collections import Counter
 
 def get_text(file_name):
     with open(file_name) as read_file:
-        reg = re.compile('[^a-zA-Z]')
-        return reg.sub('', str(read_file.readlines()))
+        reg = re.compile("[^a-zA-Z]")
+        return reg.sub("", str(read_file.readlines()))
 
 
 def count_letters(text):
