@@ -23,7 +23,7 @@ def write_in_file(file_name, result):
 
 
 def file_check(read_file_name, write_file_name):
-    if not (exists(read_file_name)):
+    if not exists(read_file_name):
         print(f"не существует {read_file_name}")
         return False
     if exists(write_file_name):
