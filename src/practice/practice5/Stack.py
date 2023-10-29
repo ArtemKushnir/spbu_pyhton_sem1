@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from collections import namedtuple
-
+from typing import Any
 
 StackElement = namedtuple("StackElement", ["value", "next"])
 
@@ -19,12 +19,12 @@ def size(stack: Stack) -> int:
     return stack.size
 
 
-def top(stack: Stack) -> any:
+def top(stack: Stack) -> Any:
     if not empty(stack):
         return stack.head.value
 
 
-def push(stack: Stack, value: any) -> None:
+def push(stack: Stack, value: Any) -> None:
     new_element = StackElement(value, stack.head)
     stack.head = new_element
     stack.size += 1
