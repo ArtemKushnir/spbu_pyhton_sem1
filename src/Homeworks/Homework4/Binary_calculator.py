@@ -2,68 +2,55 @@ def transformation_to_binary(number):
     if number == 0:
         return [0, 0]
     elif number > 0:
-        bit = []
-        sign = [0, 0]
+        sign = [0]
     else:
-        bit = []
         number = abs(number)
-        sign = [1, 0]
+        sign = [1]
+    bit = []
     while number:
         bit.append(number % 2)
         number //= 2
+    bit.append(0)
     return sign + bit[::-1]
-
-
-def transformation_to_reverse(number):
-    if number[0] == 0:
-        return number
-    else:
-        for i in range(1, len(number)):
-            if number[i] == 0:
-                number[i] = 1
-            else:
-                number[i] = 0
-        return number
 
 
 def transformation_to_additional(number):
     if number[0] == 0:
         return number
-    else:
-        for i in range(len(number) - 1, 0, -1):
-            if number[i] == 0:
-                return number[:i] + [1] + [0] * (len(number) - i - 1)
+    for i in range(1, len(number)):
+        if number[i] == 0:
+            number[i] = 1
+        else:
+            number[i] = 0
+    return calculate_sum(number, [0] * (len(number) - 1) + [1])
 
 
-def change(number1, number2, negative_number2):
-    if len(number1) > len(number2):
-        number2 = [number2[0]] + [0] * (len(number1) - len(number2)) + number2[1:]
-        negative_number2 = (
-            [negative_number2[0]]
-            + [0] * (len(number1) - len(negative_number2))
-            + negative_number2[1:]
-        )
-        return number1, number2, negative_number2
-    elif len(number2) > len(number1):
-        number1 = [number1[0]] + [0] * (len(number2) - len(number1)) + number1[1:]
-        return number1, number2, negative_number2
-    else:
-        return number1, number2, negative_number2
+def add_digits_to_second_number(number1, number2, negative_number2):
+    for i in range(len(number1) - len(number2)):
+        number2.insert(1, 0)
+        negative_number2.insert(1, 0)
+    return number2, negative_number2
+
+
+def add_digits_to_first_number(number1, number2):
+    for i in range(len(number2) - len(number1)):
+        number1.insert(1, 0)
+    return number1
 
 
 def calculate_final_number(number1, number2):
     direct_code1 = transformation_to_binary(number1)
     direct_code2 = transformation_to_binary(number2)
     direct_negative_code2 = transformation_to_binary(-number2)
-    direct_code1, direct_code2, direct_negative_code2 = change(
-        direct_code1, direct_code2, direct_negative_code2
-    )
-    reverse_code1 = transformation_to_reverse(direct_code1)
-    reverse_code2 = transformation_to_reverse(direct_code2)
-    reverse_negative_code2 = transformation_to_reverse(direct_negative_code2)
-    additional_code1 = transformation_to_additional(reverse_code1)
-    additional_code2 = transformation_to_additional(reverse_code2)
-    additional_negative_code2 = transformation_to_additional(reverse_negative_code2)
+    if len(direct_code1) > len(direct_code2):
+        direct_code2, direct_negative_code2 = add_digits_to_second_number(
+            direct_code1, direct_code2, direct_negative_code2
+        )
+    elif len(direct_code2) > len(direct_code1):
+        direct_code1 = add_digits_to_first_number(direct_code1, direct_code2)
+    additional_code1 = transformation_to_additional(direct_code1)
+    additional_code2 = transformation_to_additional(direct_code2)
+    additional_negative_code2 = transformation_to_additional(direct_negative_code2)
     return additional_code1, additional_code2, additional_negative_code2
 
 
@@ -71,18 +58,12 @@ def calculate_sum(number1, number2):
     result = []
     count = 0
     for i in range(len(number1) - 1, -1, -1):
-        if number1[i] + number2[i] + count == 0:
-            result.append(0)
-            count = 0
-        elif number1[i] + number2[i] + count == 1:
-            result.append(1)
-            count = 0
-        elif number1[i] + number2[i] + count == 2:
-            result.append(0)
+        adding_digit = number1[i] + number2[i] + count
+        result.append(adding_digit % 2)
+        if adding_digit > 1:
             count = 1
         else:
-            result.append(1)
-            count = 1
+            count = 0
     return result[::-1]
 
 
@@ -105,14 +86,28 @@ def output_numbers_and_calculations(
     print(f"{number1} - {number2} = {number1 - number2}")
 
 
-if __name__ == "__main__":
+def main():
     print("Enter first number:")
-    first_number = int(input())
+    first_number = input()
+    if not first_number.lstrip("-").isdigit():
+        print("error, not a number entered")
+        return
     print("Enter second number:")
-    second_number = int(input())
+    second_number = input()
+    if not second_number.lstrip("-").isdigit():
+        print("error, not a number entered")
+        return
     first_code, second_code, second_reverse_code = calculate_final_number(
-        first_number, second_number
+        int(first_number), int(second_number)
     )
     output_numbers_and_calculations(
-        first_code, second_code, second_reverse_code, first_number, second_number
+        first_code,
+        second_code,
+        second_reverse_code,
+        int(first_number),
+        int(second_number),
     )
+
+
+if __name__ == "__main__":
+    main()
