@@ -11,10 +11,10 @@ def decode_string(string):
     index_letter = 0
     for i in range(2, len(string)):
         if string[i].isalpha():
-            result += letter * int(string[index_letter + 1: i])
+            result += letter * int(string[index_letter + 1 : i])
             letter = string[i]
             index_letter = i
-    result += letter * int(string[index_letter + 1:])
+    result += letter * int(string[index_letter + 1 :])
     return result
 
 
@@ -23,7 +23,6 @@ def validate_input(string):
         return "1"
     pod_string = ""
     count_alpha = 0
-
 
 
 def main():
