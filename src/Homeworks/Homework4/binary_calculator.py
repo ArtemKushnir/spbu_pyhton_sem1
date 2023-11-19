@@ -10,24 +10,30 @@ def transformation_to_binary(number):
     while number:
         bit.append(number % 2)
         number //= 2
-    bit.append(0)
     return bit + sign
 
 
-def transformation_to_additional(number_array):
-    if number_array[-1] == 0:
-        return number_array
+def reverse_binary(number_array):
     for i in range(len(number_array) - 1):
         if number_array[i] == 0:
             number_array[i] = 1
         else:
             number_array[i] = 0
-    return calculate_sum(number_array, [1] + [0] * (len(number_array) - 1))
+    return number_array
+
+
+def transformation_to_additional(number_array):
+    if number_array[-1] == 0:
+        return number_array
+    reverse_number_array = reverse_binary(number_array)
+    return calculate_sum(
+        reverse_number_array, [1] + [0] * (len(reverse_number_array) - 1)
+    )
 
 
 def add_digits(number_array, difference_length):
-    number_array = number_array[:-1]
     sign = number_array[-1]
+    number_array = number_array[:-1]
     number_array.extend([sign] * difference_length)
     number_array.append(sign)
     return number_array
@@ -48,13 +54,9 @@ def transformation_to_decimal(number_array):
     if number_array[-1] == 1:
         sign = -1
         number_array = calculate_sum(number_array, [1] * len(number_array))
-        for i in range(len(number_array)):
-            if number_array[i] == 0:
-                number_array[i] = 1
-            else:
-                number_array[i] = 0
+        number_array = reverse_binary(number_array)
     result = 0
-    for i in range(len(number_array)):
+    for i in range(len(number_array) - 1):
         result += 2**i * number_array[i] * sign
     return result
 
@@ -79,15 +81,29 @@ if __name__ == "__main__":
     first_number = int(input())
     print("enter second number:")
     second_number = int(input())
-    first_number, second_number, negative_second_number = calculate_final_numbers(
-        first_number, second_number
+    (
+        first_number_binary,
+        second_number_binary,
+        negative_second_number_binary,
+    ) = calculate_final_numbers(first_number, second_number)
+    print("first number in binary form:", "".join(map(str, first_number_binary[::-1])))
+    print(
+        "second number in binary form:", "".join(map(str, second_number_binary[::-1]))
     )
-    print("first number in binary form:", "".join(map(str, first_number[::-1])))
-    print("second number in binary form:", "".join(map(str, second_number[::-1])))
-    binary_sum_reverse = calculate_sum(first_number, second_number)
+    binary_sum_reverse = calculate_sum(first_number_binary, second_number_binary)
+    if first_number + second_number >= 0:
+        binary_sum_reverse.append(0)
+    else:
+        binary_sum_reverse.append(1)
     print("sum in binary form:", "".join(map(str, binary_sum_reverse[::-1])))
     print("sum in decimal form:", transformation_to_decimal(binary_sum_reverse)),
-    binary_difference_reverse = calculate_sum(first_number, negative_second_number)
+    binary_difference_reverse = calculate_sum(
+        first_number_binary, negative_second_number_binary
+    )
+    if first_number + -second_number >= 0:
+        binary_difference_reverse.append(0)
+    else:
+        binary_difference_reverse.append(1)
     print(
         "difference in binary form:", "".join(map(str, binary_difference_reverse[::-1]))
     )
