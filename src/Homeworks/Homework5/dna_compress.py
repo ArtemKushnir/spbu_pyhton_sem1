@@ -25,7 +25,9 @@ def validate_input(string: str) -> str:
         return "1"
     if string[0].isalpha():
         for i in range(len(string) - 1):
-            if string[i].isalpha() and not (string[i + 1].isdigit() and string[i + 1] != "0"):
+            if string[i].isalpha() and not (
+                string[i + 1].isdigit() and string[i + 1] != "0"
+            ):
                 return ""
             if not (string[i].isalpha() or string[i].isdigit()):
                 return ""

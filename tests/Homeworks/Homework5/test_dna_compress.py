@@ -28,14 +28,17 @@ def test_decode_string(string, expected):
     assert actual == expected
 
 
-@pytest.mark.parametrize("string,expected", [
-    ("gghhssssss", "1"),
-    ("qqqqqqqqqqqqq", "1"),
-    ("g1h1j1k1l1", "2"),
-    ("g100h20", "2"),
-    ("gg1j2", ""),
-    ("1h2g", "")
-])
+@pytest.mark.parametrize(
+    "string,expected",
+    [
+        ("gghhssssss", "1"),
+        ("qqqqqqqqqqqqq", "1"),
+        ("g1h1j1k1l1", "2"),
+        ("g100h20", "2"),
+        ("gg1j2", ""),
+        ("1h2g", ""),
+    ],
+)
 def test_validate_input(string, expected):
     actual = dna_compress.validate_input(string)
     assert actual == expected
