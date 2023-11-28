@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-from typing import TypeVar, Generic, Optional
-
+from typing import TypeVar, Generic, Optional, Callable, Iterable
 
 Value = TypeVar("Value")
+Key = TypeVar("Key")
 
 
 @dataclass
@@ -40,15 +40,12 @@ def create_tree() -> Tree[Value]:
     return Tree()
 
 
-def delete_tree(tree: Tree[Value]) -> None:
-    pass
-
-
 def put(tree: Tree[Value], key: int, value: Value) -> None:
     new_tree_node = TreeNode(key, value)
     if tree.root is None:
         tree.root = new_tree_node
     else:
+
         def put_recursion(curr_node: TreeNode[Value]) -> TreeNode[Value]:
             if curr_node is None:
                 return new_tree_node
@@ -60,23 +57,26 @@ def put(tree: Tree[Value], key: int, value: Value) -> None:
             else:
                 curr_node.right = put_recursion(curr_node.right)
             _update_height(curr_node)
-            if abs(_get_balance_factor(curr_node)) > 1:
-                curr_node = _balancing_tree(curr_node, key)
+            balance_factor = _get_balance_factor(curr_node)
+            if abs(balance_factor) > 1:
+                curr_node = _balancing_tree(curr_node, balance_factor)
             return curr_node
+
         tree.root = put_recursion(tree.root)
     tree.size += 1
 
 
-def _balancing_tree(curr_node: TreeNode[Value], key: int) -> TreeNode[Value]:
-    balance_factor = _get_balance_factor(curr_node)
+def _balancing_tree(curr_node: TreeNode[Value], balance_factor: int) -> TreeNode[Value]:
     if balance_factor > 1:
-        if key < curr_node.left.key:
+        left_balance_factor = _get_balance_factor(curr_node.left)
+        if left_balance_factor >= 0:
             curr_node = _perform_small_right_turn(curr_node)
         else:
             curr_node.left = _perform_small_left_turn(curr_node.left)
             curr_node = _perform_small_right_turn(curr_node)
     if balance_factor < -1:
-        if key > curr_node.right.key:
+        right_balance_factor = _get_balance_factor(curr_node.right)
+        if right_balance_factor <= 0:
             curr_node = _perform_small_left_turn(curr_node)
         else:
             curr_node.right = _perform_small_right_turn(curr_node.right)
@@ -106,14 +106,24 @@ def remove(tree: Tree[Value], key: int) -> Value:
     if not has_key(tree, key):
         raise ValueError(f"no such key {key}")
 
-    def remove_recursion(curr_node: TreeNode[Value]) -> tuple[Optional[TreeNode[Value]], Value]:
+    def remove_recursion(
+        curr_node: TreeNode[Value],
+    ) -> tuple[Optional[TreeNode[Value]], Value]:
         if curr_node.key < key:
             new_right_child, value = remove_recursion(curr_node.right)
             curr_node.right = new_right_child
+            _update_height(curr_node)
+            balance_factor = _get_balance_factor(curr_node)
+            if abs(balance_factor) > 1:
+                curr_node = _balancing_tree(curr_node, balance_factor)
             return curr_node, value
         elif curr_node.key > key:
             new_left_child, value = remove_recursion(curr_node.left)
             curr_node.left = new_left_child
+            _update_height(curr_node)
+            balance_factor = _get_balance_factor(curr_node)
+            if abs(balance_factor) > 1:
+                curr_node = _balancing_tree(curr_node, balance_factor)
             return curr_node, value
         if curr_node.left is None and curr_node.right is None:
             return None, curr_node.value
@@ -121,19 +131,20 @@ def remove(tree: Tree[Value], key: int) -> Value:
             new_node = curr_node.left if curr_node.left is not None else curr_node.right
             return new_node, curr_node.value
         else:
-            new_key, new_value = find_min_element(curr_node.right)
+            result = curr_node.value
+            new_key, new_value = _find_min_element(curr_node.right)
             remove(tree, new_key)
             tree.size += 1
-            new_node = curr_node
-            new_node.key = new_key
-            new_node.value = new_value
-            return new_node, curr_node.value
+            curr_node.key = new_key
+            curr_node.value = new_value
+            return curr_node, result
+
     tree.root, value = remove_recursion(tree.root)
     tree.size -= 1
     return value
 
 
-def find_min_element(curr_node: TreeNode) -> tuple[int, Value]:
+def _find_min_element(curr_node: TreeNode) -> tuple[int, Value]:
     while curr_node.left is not None:
         curr_node = curr_node.left
     return curr_node.key, curr_node.value
@@ -166,7 +177,7 @@ def has_key(tree: Tree[Value], key: int) -> bool:
 
 def get_lower_bound(tree: Tree, key: int) -> int:
     if _is_empty(tree):
-        raise ValueError("tree is clear")
+        raise ValueError("the tree is empty")
     result = None
     curr_node = tree.root
     while curr_node is not None:
@@ -184,7 +195,7 @@ def get_lower_bound(tree: Tree, key: int) -> int:
 
 def get_upper_bound(tree: Tree, key: int) -> int:
     if _is_empty(tree):
-        raise ValueError("tree is clear")
+        raise ValueError("the tree is empty")
     result = None
     curr_node = tree.root
     while curr_node is not None:
@@ -220,21 +231,38 @@ def _is_empty(tree: Tree) -> bool:
     return tree.size == 0
 
 
-new_tree = create_tree()
-# put(new_tree, 20,20)
-# put(new_tree, 10, 10)
-# put(new_tree, 40, 40)
-# put(new_tree, 30, 30)
-# put(new_tree, 50, 50)
-# put(new_tree, 60, 60)
-put(new_tree, 20, 20) # тесты на большой поворот
-put(new_tree, 5, 5)
-put(new_tree, 35, 35)
-put(new_tree, 40, 40)
-put(new_tree, 25, 25)
-put(new_tree, 30, 30)
-put(new_tree, 24, 24)
-# print(new_tree)
-# print(_get_height(new_tree.root))
-# print(get_lower_bound(new_tree, 30))
-print(get_upper_bound(new_tree, 24))
+def _preorder_comparator(node: TreeNode[Value]) -> Iterable[TreeNode[Value]]:
+    return filter(None, (node, node.left, node.right))
+
+
+def _inorder_comparator(node: TreeNode[Value]) -> Iterable[TreeNode[Value]]:
+    return filter(None, (node.left, node, node.right))
+
+
+def _postorder_comparator(node: TreeNode[Value]) -> Iterable[TreeNode[Value]]:
+    return filter(None, (node.left, node.right, node))
+
+
+def traverse(tree: Tree[Value], order: str) -> list[[tuple[int, Value]]]:
+    values = []
+
+    def traverse_recursion(curr_node: TreeNode[Value], order_func: Callable):
+        node_order = order_func(curr_node)
+        for node in node_order:
+            if node is not curr_node:
+                traverse_recursion(node, order_func)
+            else:
+                values.append((node.key, node.value))
+
+    if order == "preorder":
+        traverse_recursion(tree.root, _preorder_comparator)
+    elif order == "inorder":
+        traverse_recursion(tree.root, _inorder_comparator)
+    elif order == "postorder":
+        traverse_recursion(tree.root, _postorder_comparator)
+    return values
+
+
+def delete_tree(tree: Tree[Value]) -> None:
+    del tree.root
+    del tree.size
