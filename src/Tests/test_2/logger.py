@@ -25,7 +25,7 @@ def logger(func, file_name):
     def inner(*args, **kwargs):
         all_args = getcallargs(func, *args, **kwargs)
         all_args_str = [f"{i[0]}={i[1]}" for i in all_args.items()]
-        current_date = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+        current_date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         result = func(*args, **kwargs)
         logs = " ".join([current_date, func.__name__, *all_args_str, str(result)])
         if not exists(file_name):
