@@ -31,14 +31,31 @@ def test_decode_string(string, expected):
 @pytest.mark.parametrize(
     "string,expected",
     [
-        ("gghhssssss", "1"),
-        ("qqqqqqqqqqqqq", "1"),
-        ("g1h1j1k1l1", "2"),
-        ("g100h20", "2"),
-        ("gg1j2", ""),
-        ("1h2g", ""),
+        ("gghhssssss", True),
+        ("qqqqqqqqqqqqq", True),
+        ("g1h1j1k1l1", False),
+        ("g100h20", False),
+        ("gg1j2", False),
+        ("1h2g", False),
+        ("g", True),
     ],
 )
-def test_validate_input(string, expected):
-    actual = dna_compress.validate_input(string)
+def test_validate_input_for_encode(string, expected):
+    actual = dna_compress.validate_input_for_encode(string)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "string,expected",
+    [
+        ("gfg", False),
+        ("1h3j4", False),
+        ("f4j5k", False),
+        ("123", False),
+        ("f01k4", False),
+        ("h1j2k3", True),
+    ],
+)
+def test_validate_input_for_decode(string, expected):
+    actual = dna_compress.validate_input_for_decode(string)
     assert actual == expected
