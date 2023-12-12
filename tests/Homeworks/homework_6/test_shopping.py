@@ -1,5 +1,4 @@
 import tempfile
-
 from src.Homeworks.homework_6 import shopping, avl_tree
 from test_avl_tree import create_dummy_tree
 from io import StringIO
@@ -71,3 +70,17 @@ def test_process_request(elements, expected, string):
 def test_validate_request(string, expected):
     actual = shopping.validate_request(string)
     assert actual == expected
+
+
+def test_main_scenario(monkeypatch):
+    results_file = tempfile.NamedTemporaryFile(mode="w+")
+    balance_file = tempfile.NamedTemporaryFile(mode="w+")
+    arguments = iter(["2", "/home/kush/python/SPBU_projects/spbu_python_sem1/src/Homeworks/homework_6/shop_logs.txt", f"{results_file.name}", f"{balance_file.name}", "3"])
+    monkeypatch.setattr("builtins.input", lambda x: next(arguments, "\n"))
+    shopping.main()
+    with open("src/Homeworks/Homework_6/shop_results.txt") as result:
+        with open(results_file.name) as actual_result:
+            results_file.close()
+            for expected in result:
+                actual = actual_result.readline()
+                assert expected == actual
