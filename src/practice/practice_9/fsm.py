@@ -1,31 +1,29 @@
 from dataclasses import dataclass
-from typing import Callable
 
 
 @dataclass
 class FSMachine:
     table_states: dict[int, dict[str, int]]
-    move: Callable[[str, int, "FSMachine"], int]
     initial_state: int
-    final_states: set[int]
+    terminal_states: set[int]
 
 
 def _switch_to_new_state(curr_symbol: str, state: int, fsm: FSMachine) -> int | None:
-    return fsm.table_states[state].get(curr_symbol)
+    for key, value in fsm.table_states[state].items():
+        if curr_symbol in key:
+            return value
 
 
 def create_fs_machine(
-    states: dict[int, dict[str, int]], initial_state: int, final_states: set[int]
+    states: dict[int, dict[str, int]], initial_state: int, terminal_states: set[int]
 ) -> FSMachine:
-    return FSMachine(states, _switch_to_new_state, initial_state, final_states)
+    return FSMachine(states, initial_state, terminal_states)
 
 
 def validate_string(fsm: FSMachine, string: str) -> bool:
     current_state = fsm.initial_state
     for i in string:
-        current_state = fsm.move(i, current_state, fsm)
+        current_state = _switch_to_new_state(i, current_state, fsm)
         if current_state is None:
             return False
-    if current_state in fsm.final_states:
-        return True
-    return False
+    return current_state in fsm.terminal_states

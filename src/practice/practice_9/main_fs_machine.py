@@ -1,7 +1,8 @@
-from . import fsm
+from src.practice.practice_9 import fsm
+import string
 
 
-LANGUAGES = ["(a|b)*abb"]
+LANGUAGES = ["(a|b)*abb", "digit+(.digit+)?(E(+|-)?digit+)?"]
 
 
 def create_correct_fsm(name_language: str) -> fsm.FSMachine:
@@ -13,19 +14,40 @@ def create_correct_fsm(name_language: str) -> fsm.FSMachine:
             3: {"b": 0, "a": 1},
         }
         initial_state = 0
-        final_states = {3}
-    return fsm.create_fs_machine(states, initial_state, final_states)
+        terminal_states = {3}
+    elif name_language == LANGUAGES[1]:
+        states = {
+            0: {string.digits: 1},
+            1: {".": 2, "E": 4, string.digits: 1},
+            2: {string.digits: 3},
+            3: {"E": 4, string.digits: 3},
+            4: {"+-": 5, string.digits: 6},
+            5: {string.digits: 6},
+            6: {string.digits: 6},
+        }
+        initial_state = 0
+        terminal_states = {1, 3, 6}
+    return fsm.create_fs_machine(states, initial_state, terminal_states)
 
 
 def main() -> None:
-    input_word = input("Enter a word to determine which language it belongs to: ")
+    fs_machines = []
     for language in LANGUAGES:
-        new_fsm = create_correct_fsm(language)
-        if fsm.validate_string(new_fsm, input_word):
-            print(f"This word belongs to the language '{language}'")
-            break
-    else:
-        print("There was no suitable language")
+        fs_machines.append(create_correct_fsm(language))
+    input_word = input(
+        "Enter a word to determine which language it belongs to or enter the 'end' to finish the job: "
+    )
+    while input_word != "end":
+        for i in range(len(fs_machines)):
+            if fsm.validate_string(fs_machines[i], input_word):
+                print(f"This word belongs to the language '{LANGUAGES[i]}'")
+                break
+        else:
+            print("There was no suitable language")
+        input_word = input(
+            "Enter a word to determine which language it belongs to or enter the 'end' to finish the "
+            "job: "
+        )
 
 
 if __name__ == "__main__":

@@ -18,15 +18,34 @@ def test_create_correct_fs_machine():
 @pytest.mark.parametrize(
     "user_input,expected",
     [
-        ("abb", "This word belongs to the language '(a|b)*abb'\n"),
-        ("aaaaaababb", "This word belongs to the language '(a|b)*abb'\n"),
-        ("bbbbabb", "This word belongs to the language '(a|b)*abb'\n"),
-        ("bbab", "There was no suitable language\n"),
-        ("cb", "There was no suitable language\n"),
+        (
+            "abb\nend",
+            "Enter a word to determine which language it belongs to or enter the 'end' to finish the job: "
+            "This word belongs to the language '(a|b)*abb'\n"
+            "Enter a word to determine which language it belongs to or enter the 'end' to finish the job: ",
+        ),
+        (
+            "abb\n12.123E+23\nend",
+            "Enter a word to determine which language it belongs to or enter the 'end' to finish "
+            "the job: "
+            "This word belongs to the language '(a|b)*abb'\n"
+            "Enter a word to determine which language it belongs to or enter the 'end' to finish "
+            "the job: "
+            "This word belongs to the language 'digit+(.digit+)?(E(+|-)?digit+)?'\n"
+            "Enter a word to determine which language it belongs to or enter the 'end' to finish "
+            "the job: ",
+        ),
+        (
+            "bbab\nend",
+            "Enter a word to determine which language it belongs to or enter the 'end' to finish the job: "
+            "There was no suitable language\n"
+            "Enter a word to determine which language it belongs to or enter the 'end' to finish the job: ",
+        ),
     ],
 )
 def test_main_scenario(monkeypatch, user_input, expected):
-    monkeypatch.setattr("builtins.input", lambda _: user_input)
+    arguments = StringIO(user_input)
+    monkeypatch.setattr("sys.stdin", arguments)
     fake_output = StringIO()
     monkeypatch.setattr("sys.stdout", fake_output)
     main_fs_machine.main()
