@@ -8,10 +8,6 @@ def foo1(a, b):
     print(a + b)
 
 
-def foo3(a, b):
-    print(a + b)
-
-
 @safe_call
 def foo2(a, b):
     return a / b
@@ -72,13 +68,13 @@ def test_safe_calls_warning(a, b, expected):
     [
         (
             (
-                "foo3",
+                "foo1",
                 "TypeError",
                 TypeError("unsupported operand type(s) for +: 'int' and 'str'"),
                 "print(a + b)",
-                12,
+                8,
             ),
-            foo3,
+            foo1,
             3,
             "5",
         ),
