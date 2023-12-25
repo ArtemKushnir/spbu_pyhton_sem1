@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import TypeVar, Generic, Optional, Callable, Iterable
 
 Value = TypeVar("Value")
-Key = TypeVar("Key")
 
 
 @dataclass
@@ -44,25 +43,26 @@ def put(tree: Tree[Value], key: int, value: Value) -> None:
     new_tree_node = TreeNode(key, value)
     if tree.root is None:
         tree.root = new_tree_node
-    else:
+        tree.size = 1
+        return
 
-        def put_recursion(curr_node: TreeNode[Value]) -> TreeNode[Value]:
-            if curr_node is None:
-                return new_tree_node
-            elif curr_node.key == key:
-                curr_node.value = value
-                return curr_node
-            elif curr_node.key > key:
-                curr_node.left = put_recursion(curr_node.left)
-            else:
-                curr_node.right = put_recursion(curr_node.right)
-            _update_height(curr_node)
-            balance_factor = _get_balance_factor(curr_node)
-            if abs(balance_factor) > 1:
-                curr_node = _balancing_tree(curr_node, balance_factor)
+    def put_recursion(curr_node: TreeNode[Value]) -> TreeNode[Value]:
+        if curr_node is None:
+            return new_tree_node
+        elif curr_node.key == key:
+            curr_node.value = value
             return curr_node
+        elif curr_node.key > key:
+            curr_node.left = put_recursion(curr_node.left)
+        else:
+            curr_node.right = put_recursion(curr_node.right)
+        _update_height(curr_node)
+        balance_factor = _get_balance_factor(curr_node)
+        if abs(balance_factor) > 1:
+            curr_node = _balancing_tree(curr_node, balance_factor)
+        return curr_node
 
-        tree.root = put_recursion(tree.root)
+    tree.root = put_recursion(tree.root)
     tree.size += 1
 
 
@@ -109,23 +109,35 @@ def remove(tree: Tree[Value], key: int) -> Value:
     def remove_recursion(
         curr_node: TreeNode[Value],
     ) -> tuple[Optional[TreeNode[Value]], Value]:
-        if curr_node.key < key:
-            new_right_child, value = remove_recursion(curr_node.right)
-            curr_node.right = new_right_child
+        if curr_node.key != key:
+            if curr_node.key < key:
+                new_right_child, value = remove_recursion(curr_node.right)
+                curr_node.right = new_right_child
+            else:
+                new_left_child, value = remove_recursion(curr_node.left)
+                curr_node.left = new_left_child
             _update_height(curr_node)
             balance_factor = _get_balance_factor(curr_node)
             if abs(balance_factor) > 1:
                 curr_node = _balancing_tree(curr_node, balance_factor)
             return curr_node, value
-        elif curr_node.key > key:
-            new_left_child, value = remove_recursion(curr_node.left)
-            curr_node.left = new_left_child
-            _update_height(curr_node)
-            balance_factor = _get_balance_factor(curr_node)
-            if abs(balance_factor) > 1:
-                curr_node = _balancing_tree(curr_node, balance_factor)
-            return curr_node, value
-        if curr_node.left is None and curr_node.right is None:
+        # if curr_node.key < key:
+        #     new_right_child, value = remove_recursion(curr_node.right)
+        #     curr_node.right = new_right_child
+        #     _update_height(curr_node)
+        #     balance_factor = _get_balance_factor(curr_node)
+        #     if abs(balance_factor) > 1:
+        #         curr_node = _balancing_tree(curr_node, balance_factor)
+        #     return curr_node, value
+        # elif curr_node.key > key:
+        #     new_left_child, value = remove_recursion(curr_node.left)
+        #     curr_node.left = new_left_child
+        #     _update_height(curr_node)
+        #     balance_factor = _get_balance_factor(curr_node)
+        #     if abs(balance_factor) > 1:
+        #         curr_node = _balancing_tree(curr_node, balance_factor)
+        #     return curr_node, value
+        elif curr_node.left is None and curr_node.right is None:
             return None, curr_node.value
         elif curr_node.left is None or curr_node.right is None:
             new_node = curr_node.left if curr_node.left is not None else curr_node.right
@@ -150,28 +162,27 @@ def _find_min_element(curr_node: TreeNode) -> tuple[int, Value]:
     return curr_node.key, curr_node.value
 
 
+def get_vertex(tree: Tree[Value], key: int) -> TreeNode[Value]:
+    curr_node = tree.root
+    while curr_node is not None:
+        if curr_node.key > key:
+            curr_node = curr_node.left
+        elif curr_node.key < key:
+            curr_node = curr_node.right
+        else:
+            return curr_node
+
+
 def get(tree: Tree[Value], key: int) -> Value:
     if not has_key(tree, key):
         raise ValueError(f"no such key {key}")
-    curr_node = tree.root
-    while curr_node is not None:
-        if curr_node.key == key:
-            return curr_node.value
-        elif key > curr_node.key:
-            curr_node = curr_node.right
-        elif key < curr_node.key:
-            curr_node = curr_node.left
+    return get_vertex(tree, key).value
 
 
 def has_key(tree: Tree[Value], key: int) -> bool:
-    curr_node = tree.root
-    while curr_node is not None:
-        if curr_node.key == key:
-            return True
-        elif key > curr_node.key:
-            curr_node = curr_node.right
-        elif key < curr_node.key:
-            curr_node = curr_node.left
+    curr_node = get_vertex(tree, key)
+    if curr_node:
+        return True
     return False
 
 
@@ -189,7 +200,7 @@ def get_lower_bound(tree: Tree, key: int) -> int:
         else:
             return curr_node.key
     if result is None:
-        raise ValueError(f"there is no key larger than {key}")
+        raise ValueError(f"there is no key larger or equal than {key}")
     return result
 
 
