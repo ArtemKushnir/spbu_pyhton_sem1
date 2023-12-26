@@ -51,6 +51,7 @@ def put(tree: Tree[Value], key: int, value: Value) -> None:
             return new_tree_node
         elif curr_node.key == key:
             curr_node.value = value
+            tree.size -= 1
             return curr_node
         elif curr_node.key > key:
             curr_node.left = put_recursion(curr_node.left)
@@ -121,22 +122,6 @@ def remove(tree: Tree[Value], key: int) -> Value:
             if abs(balance_factor) > 1:
                 curr_node = _balancing_tree(curr_node, balance_factor)
             return curr_node, value
-        # if curr_node.key < key:
-        #     new_right_child, value = remove_recursion(curr_node.right)
-        #     curr_node.right = new_right_child
-        #     _update_height(curr_node)
-        #     balance_factor = _get_balance_factor(curr_node)
-        #     if abs(balance_factor) > 1:
-        #         curr_node = _balancing_tree(curr_node, balance_factor)
-        #     return curr_node, value
-        # elif curr_node.key > key:
-        #     new_left_child, value = remove_recursion(curr_node.left)
-        #     curr_node.left = new_left_child
-        #     _update_height(curr_node)
-        #     balance_factor = _get_balance_factor(curr_node)
-        #     if abs(balance_factor) > 1:
-        #         curr_node = _balancing_tree(curr_node, balance_factor)
-        #     return curr_node, value
         elif curr_node.left is None and curr_node.right is None:
             return None, curr_node.value
         elif curr_node.left is None or curr_node.right is None:
@@ -181,9 +166,7 @@ def get(tree: Tree[Value], key: int) -> Value:
 
 def has_key(tree: Tree[Value], key: int) -> bool:
     curr_node = get_vertex(tree, key)
-    if curr_node:
-        return True
-    return False
+    return curr_node is not None
 
 
 def get_lower_bound(tree: Tree, key: int) -> int:
@@ -233,9 +216,7 @@ def get_minimum(tree: Tree) -> int:
     if _is_empty(tree):
         raise ValueError("tree is clear")
     new_node = tree.root
-    while new_node.left is not None:
-        new_node = new_node.left
-    return new_node.key
+    return _find_min_element(new_node)[0]
 
 
 def _is_empty(tree: Tree) -> bool:

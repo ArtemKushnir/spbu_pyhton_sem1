@@ -1,4 +1,5 @@
 from src.Homeworks.homework_6 import avl_tree
+import random
 import pytest
 
 
@@ -20,27 +21,22 @@ def test_delete_tree():
     assert new_tree.size == 0 and new_tree.root is None
 
 
-@pytest.mark.parametrize(
-    "elements,expected,size",
-    [
-        (
-            ((10, 10), (20, 20), (5, 5), (30, 30), (15, 15)),
-            [(5, 5), (10, 10), (15, 15), (20, 20), (30, 30)],
-            5,
-        ),
-        (((55, 55), (60, 60), (50, 50)), [(50, 50), (55, 55), (60, 60)], 3),
-        (((1, 1), (2, 2), (3, 3)), [(1, 1), (2, 2), (3, 3)], 3),
-        (
-            ((20, 20), (40, 40), (10, 10), (50, 50), (30, 30), (25, 25)),
-            [(10, 10), (20, 20), (25, 25), (30, 30), (40, 40), (50, 50)],
-            6,
-        ),
-    ],
-)
-def test_put(elements, expected, size):
-    new_tree = create_dummy_tree(elements)
-    values = avl_tree.traverse(new_tree, "inorder")
-    assert values == expected
+@pytest.mark.parametrize("number_elements,size", [(5, 5), (10, 10), (15, 15)])
+def test_put(number_elements, size):
+    new_tree = avl_tree.create_tree()
+    for i in range(number_elements):
+        random_number = random.randint(0, 1000)
+        avl_tree.put(new_tree, random_number, random_number)
+        assert avl_tree.has_key(new_tree, random_number)
+        assert (
+            abs(
+                avl_tree._get_balance_factor(
+                    avl_tree.get_vertex(new_tree, random_number)
+                )
+            )
+            < 2
+        )
+        assert abs(avl_tree._get_balance_factor(new_tree.root)) < 2
     assert new_tree.size == size
 
 
