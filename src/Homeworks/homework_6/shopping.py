@@ -84,7 +84,9 @@ def calculate_and_write_remains(
     remains = avl_tree.traverse(tree, "inorder")
     result = ""
     for element in remains:
-        result += str(element[0]).center(4) + "\t" + str(element[1]).center(5) + "\n"
+        result += (
+            str(element.key).center(4) + "\t" + str(element.value).center(5) + "\n"
+        )
     with open(leftover_file_name, "w") as file:
         file.write("size\tcount\n")
         file.write(result)

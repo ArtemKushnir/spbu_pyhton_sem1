@@ -40,18 +40,17 @@ def create_tree() -> Tree[Value]:
 
 
 def put(tree: Tree[Value], key: int, value: Value) -> None:
-    new_tree_node = TreeNode(key, value)
     if tree.root is None:
-        tree.root = new_tree_node
+        tree.root = TreeNode(key, value)
         tree.size = 1
         return
 
     def put_recursion(curr_node: TreeNode[Value]) -> TreeNode[Value]:
         if curr_node is None:
-            return new_tree_node
+            tree.size += 1
+            return TreeNode(key, value)
         elif curr_node.key == key:
             curr_node.value = value
-            tree.size -= 1
             return curr_node
         elif curr_node.key > key:
             curr_node.left = put_recursion(curr_node.left)
@@ -64,7 +63,6 @@ def put(tree: Tree[Value], key: int, value: Value) -> None:
         return curr_node
 
     tree.root = put_recursion(tree.root)
-    tree.size += 1
 
 
 def _balancing_tree(curr_node: TreeNode[Value], balance_factor: int) -> TreeNode[Value]:
@@ -235,7 +233,7 @@ def _postorder_comparator(node: TreeNode[Value]) -> Iterable[TreeNode[Value]]:
     return filter(None, (node.left, node.right, node))
 
 
-def traverse(tree: Tree[Value], order: str) -> list[[tuple[int, Value]]]:
+def traverse(tree: Tree[Value], order: str) -> list[TreeNode[Value]]:
     values = []
 
     def traverse_recursion(curr_node: TreeNode[Value], order_func: Callable):
@@ -244,7 +242,7 @@ def traverse(tree: Tree[Value], order: str) -> list[[tuple[int, Value]]]:
             if node is not curr_node:
                 traverse_recursion(node, order_func)
             else:
-                values.append((node.key, node.value))
+                values.append(node)
 
     if order == "preorder":
         traverse_recursion(tree.root, _preorder_comparator)
@@ -258,3 +256,10 @@ def traverse(tree: Tree[Value], order: str) -> list[[tuple[int, Value]]]:
 def delete_tree(tree: Tree[Value]) -> None:
     del tree.root
     del tree.size
+
+
+new_tree = create_tree()
+put(new_tree, 5, 5)
+put(new_tree, 10, 10)
+put(new_tree, 20, 20)
+print(traverse(new_tree, "inorder"))

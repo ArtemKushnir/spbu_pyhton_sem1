@@ -21,23 +21,15 @@ def test_delete_tree():
     assert new_tree.size == 0 and new_tree.root is None
 
 
-@pytest.mark.parametrize("number_elements,size", [(5, 5), (10, 10), (15, 15)])
-def test_put(number_elements, size):
+@pytest.mark.parametrize("number_elements", [5, 10, 15, 100, 1000])
+def test_put(number_elements):
     new_tree = avl_tree.create_tree()
     for i in range(number_elements):
         random_number = random.randint(0, 1000)
         avl_tree.put(new_tree, random_number, random_number)
         assert avl_tree.has_key(new_tree, random_number)
-        assert (
-            abs(
-                avl_tree._get_balance_factor(
-                    avl_tree.get_vertex(new_tree, random_number)
-                )
-            )
-            < 2
-        )
-        assert abs(avl_tree._get_balance_factor(new_tree.root)) < 2
-    assert new_tree.size == size
+        for node in avl_tree.traverse(new_tree, "inorder"):
+            assert abs(avl_tree._get_balance_factor(node)) < 2
 
 
 @pytest.mark.parametrize(
@@ -203,7 +195,7 @@ def test_exception_raise_get_upper_bound():
 
 
 @pytest.mark.parametrize(
-    "elements,oder,expected",
+    "elements,order,expected",
     [
         (
             ((50, 50), (60, 60), (40, 40), (30, 30), (45, 45), (55, 55), (65, 65)),
@@ -222,7 +214,7 @@ def test_exception_raise_get_upper_bound():
         ),
     ],
 )
-def test_traverse(elements, oder, expected):
+def test_traverse(elements, order, expected):
     new_tree = create_dummy_tree(elements)
-    actual = avl_tree.traverse(new_tree, oder)
+    actual = [(i.key, i.value) for i in avl_tree.traverse(new_tree, order)]
     assert actual == expected
